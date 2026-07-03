@@ -140,7 +140,7 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <ScrollReveal direction="right" delay={0.2}>
-              <div className="border border-border bg-card p-6 sticky top-20">
+              <div className="border border-border bg-card p-5 lg:sticky lg:top-20">
                 <h2 className="font-display font-bold text-lg text-foreground uppercase mb-6 border-b border-border pb-4">
                   Order Summary
                 </h2>

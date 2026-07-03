@@ -7,7 +7,7 @@ const HERO_IMAGE =
 
 export function Hero() {
   return (
-    <section className="min-h-[calc(100vh-56px)] flex items-center bg-background px-4 sm:px-6 lg:px-8 py-16 overflow-hidden">
+    <section className="lg:min-h-[calc(100vh-56px)] flex items-center bg-background px-4 sm:px-6 lg:px-8 py-12 lg:py-16 overflow-hidden">
       <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
         {/* Left — Text */}
@@ -91,7 +91,7 @@ export function Hero() {
               </div>
 
               {/* Image */}
-              <div className="aspect-[4/5] overflow-hidden">
+              <div className="aspect-square max-h-[380px] lg:max-h-[420px] overflow-hidden">
                 <img
                   src={HERO_IMAGE}
                   alt="Featured Collection Piece"

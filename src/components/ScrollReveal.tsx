@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion, Variants } from 'motion/react';
 import { useRef, useState, useEffect, ReactNode } from 'react';
 
 interface ScrollRevealProps {
@@ -45,7 +45,7 @@ export function ScrollReveal({
 }: ScrollRevealProps) {
   const { ref, inView } = useScrollInView(once);
 
-  const variants: Record<string, { hidden: object; visible: object }> = {
+  const variantMap: Record<string, { hidden: Variants['hidden']; visible: Variants['visible'] }> = {
     up:    { hidden: { opacity: 0, y: 40 },  visible: { opacity: 1, y: 0 } },
     down:  { hidden: { opacity: 0, y: -40 }, visible: { opacity: 1, y: 0 } },
     left:  { hidden: { opacity: 0, x: -50 }, visible: { opacity: 1, x: 0 } },
@@ -53,7 +53,9 @@ export function ScrollReveal({
     fade:  { hidden: { opacity: 0 },          visible: { opacity: 1 } },
   };
 
-  const { hidden, visible } = variants[direction];
+  const { hidden, visible } = variantMap[direction];
+
+  const variants: Variants = { hidden, visible };
 
   return (
     <motion.div
@@ -61,7 +63,7 @@ export function ScrollReveal({
       className={className}
       initial="hidden"
       animate={inView ? 'visible' : 'hidden'}
-      variants={{ hidden, visible }}
+      variants={variants}
       transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
@@ -87,7 +89,7 @@ export function StaggerReveal({
 }) {
   const { ref, inView } = useScrollInView(once);
 
-  const directionMap: Record<string, object> = {
+  const directionMap: Record<string, Variants['hidden']> = {
     up:    { opacity: 0, y: 30 },
     down:  { opacity: 0, y: -30 },
     left:  { opacity: 0, x: -40 },
@@ -95,13 +97,13 @@ export function StaggerReveal({
     fade:  { opacity: 0 },
   };
 
-  const container = {
+  const container: Variants = {
     hidden: {},
     visible: { transition: { staggerChildren: staggerDelay } },
   };
 
-  const item = {
-    hidden: directionMap[direction],
+  const item: Variants = {
+    hidden: directionMap[direction] as Record<string, number>,
     visible: { opacity: 1, y: 0, x: 0, transition: { duration, ease: [0.22, 1, 0.36, 1] } },
   };
 

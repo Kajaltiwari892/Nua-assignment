@@ -24,7 +24,7 @@ const CATEGORIES = [
     label: "Electronics",
     slug: "electronics",
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDdCGB0H8e1M8USEAeiygZa7G6hubTmvydc43LLng26FoU38ArkyqyYSJCGPn-1aNI52BbymU7f9TQfcBeTWW8FT9qXCtLfW7A6hrOrxs_RiMHyRFR0_FeAxWG9QXRHkItVgthrKdYKRYwYmd8kPrWAg0-D7iQ_la8oja0H7QggNV-f04D4Jl4SzkoIvEvr2Wnu-4VLeF3_zk9cgf1kRy_Ny_i6X0pV5vwK6wZeL7uYflUuS96rHdOKgw",
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuAmOE7NYXgCgnbbfc3qNKGWgTZD0w6RUqifWAXy9RdCoil5v28Z0g2BqpD73-jvmExsP__cQuu9yMX7b236Q1tBiHhdot_5R-Zt9ogrLUw4bIBe-fQqDLMC2I5HbNeTVL1RIGOS-C3zg4nDf4oDxD9W4kXoqjEuaLNin-sofv5jZdsw4G3Su80tM9vDc3r5ATYY18ya7cD1z6EUCjwMFDyafqYeqXqim7aY6WlbWTXnaJtWdrOvmJ71Pw",
   },
   {
     label: "Men's Clothing",
@@ -36,7 +36,7 @@ const CATEGORIES = [
     label: "Women's Clothing",
     slug: "women's clothing",
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCTNi-6BDnYXTFCrh2lpmFZnWvHR580TB808aFkVcz0txxHh7ybXDztsy_wW8wHW591_v7IPfpBHHNOzRJNZQGu-uefFfuZkHzyfnBe9WsRNt-fTVqbQq8QPheqKnya-SNvhKrBekoaW1T-13xMWfiyyTeL58PY2dPW6EtDc47mbXZP5RK4mB8iEOwdlwjAvjfhL_NxKUFHf_VhrzBgGGS_wK0wHbxhx2oAbPNEtNUnkWwVjUmMXg72CA",
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDdCGB0H8e1M8USEAeiygZa7G6hubTmvydc43LLng26FoU38ArkyqyYSJCGPn-1aNI52BbymU7f9TQfcBeTWW8FT9qXCtLfW7A6hrOrxs_RiMHyRFR0_FeAxWG9QXRHkItVgthrKdYKRYwYmd8kPrWAg0-D7iQ_la8oja0H7QggNV-f04D4Jl4SzkoIvEvr2Wnu-4VLeF3_zk9cgf1kRy_Ny_i6X0pV5vwK6wZeL7uYflUuS96rHdOKgw",
   },
   {
     label: "Beauty",
@@ -54,7 +54,7 @@ const CATEGORIES = [
     label: "The Collection",
     slug: "electronics",
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAmOE7NYXgCgnbbfc3qNKGWgTZD0w6RUqifWAXy9RdCoil5v28Z0g2BqpD73-jvmExsP__cQuu9yMX7b236Q1tBiHhdot_5R-Zt9ogrLUw4bIBe-fQqDLMC2I5HbNeTVL1RIGOS-C3zg4nDf4oDxD9W4kXoqjEuaLNin-sofv5jZdsw4G3Su80tM9vDc3r5ATYY18ya7cD1z6EUCjwMFDyafqYeqXqim7aY6WlbWTXnaJtWdrOvmJ71Pw",
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCFj_yQTp7NJLbDK2DrqmXr-dXS52fSu2ddse_CZyKL3lp6_69Bpx7KFhDS0dR_uMXlVRDxX4YclLp1mVP5TlEcFFf0T-09PX9qAh2uKuMLvPWRurF5V0j4_1GaBI72GSNowMC1pMxySWg3EXcUTfsneL4yCHZt4Vvg9Tl3aAoNu0St5R2cP_puCpXro84FA8yAY6ur-AGKLwl-CDFfinC6et_RhnKzC3rIcnY7aZgXnv4VPGdD5cD22g",
   },
 ];
 
@@ -141,7 +141,7 @@ export default function HomePage() {
             <div className="grid lg:grid-cols-3 gap-4">
               {/* Left — large image */}
               <ScrollReveal direction="left" delay={0.1} className="lg:col-span-2">
-                <div className="relative overflow-hidden bg-card border border-border group h-full min-h-[400px]">
+                <div className="relative overflow-hidden bg-card border border-border group h-full min-h-[260px] sm:min-h-[340px] lg:min-h-[400px]">
                   <img
                     src={IMG_KEYBOARD}
                     alt="Titan Key_01"
@@ -265,7 +265,7 @@ export default function HomePage() {
 
               <ScrollReveal direction="right" delay={0.2}>
                 <div className="relative">
-                  <div className="aspect-[4/5] overflow-hidden border border-border">
+                  <div className="aspect-square max-h-[380px] lg:max-h-[420px] overflow-hidden border border-border">
                     <img
                       src={IMG_STATEMENT}
                       alt="The Carbon Monolith"
@@ -340,7 +340,7 @@ export default function HomePage() {
         <section className="py-16 sm:py-20 border-t border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal direction="up">
-              <div className="border border-border p-10 sm:p-16 text-center max-w-2xl mx-auto">
+              <div className="border border-border p-6 sm:p-10 lg:p-16 text-center max-w-2xl mx-auto">
                 <h2 className="font-display font-black text-3xl sm:text-4xl text-foreground uppercase leading-tight mb-4">
                   Want to be like<br />everyone else?
                 </h2>
@@ -434,7 +434,7 @@ export default function HomePage() {
 
               <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p className="font-display text-[10px] tracking-widest uppercase text-muted-foreground font-medium">
-                  © 2024 LUMORA. Established for the Discerning Few.
+                  © {new Date().getFullYear()} LUMORA. Established for the Discerning Few.
                 </p>
                 <p className="font-display text-[10px] tracking-widest uppercase text-muted-foreground font-medium">
                   Built with Restraint

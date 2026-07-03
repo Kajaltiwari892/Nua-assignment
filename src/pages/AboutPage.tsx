@@ -73,7 +73,7 @@ export default function AboutPage() {
               </ScrollReveal>
 
               <ScrollReveal direction="right" delay={0.2}>
-                <div className="aspect-[4/5] overflow-hidden border border-border">
+                <div className="aspect-square max-h-[380px] lg:max-h-[420px] overflow-hidden border border-border">
                   <img
                     src={IMG_MONOLITH}
                     alt="LUMORA Studio"

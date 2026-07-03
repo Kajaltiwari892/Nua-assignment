@@ -164,7 +164,7 @@ export default function CheckoutPage() {
 
             {/* Summary */}
             <ScrollReveal direction="right" delay={0.2}>
-              <div className="border border-border bg-card p-6 sticky top-20">
+              <div className="border border-border bg-card p-5 lg:sticky lg:top-20">
                 <h2 className="font-display font-bold text-base text-foreground uppercase mb-4 pb-4 border-b border-border">
                   Order Summary
                 </h2>
