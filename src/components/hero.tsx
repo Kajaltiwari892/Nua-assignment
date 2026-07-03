@@ -1,94 +1,118 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import BlurText from "@/components/BlurText";
-import { ScrollReveal, StaggerReveal } from "@/components/ScrollReveal";
 import { motion } from "motion/react";
+import { ScrollReveal } from "@/components/ScrollReveal";
+
+const HERO_IMAGE =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuDGegXtKqOpQw7AqMc9sIvsdt91CG4BKYzF-EA8grbuE5Vt-l-zcty1tmVmCuY6EZx50rhEZhjYtxmsMiyfZfK8DllVD73CKS24qmU54tadbEPV-QsJ_UudTivuXSeviyd4vXiB8-1_Xq8ML1vS0INLOdBEFbBwqfJ3BB8QFarS2Cbgp-9QJ5EyetgjYcDHyql3FCLHR0U21L0Xh47gHr4vbVnV8k5E4vR4z3xNRA8ZXSdeICu4BIc7aA";
 
 export function Hero() {
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted pt-20 pb-12 px-4 overflow-hidden">
-      <div className="max-w-4xl mx-auto text-center space-y-8">
+    <section className="min-h-[calc(100vh-56px)] flex items-center bg-background px-4 sm:px-6 lg:px-8 py-16 overflow-hidden">
+      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-        {/* Badge */}
-        <ScrollReveal delay={0} direction="down">
-          <div className="inline-block">
-            <div className="px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium tracking-wide uppercase">
-              Premium Online Shopping Experience
-            </div>
+        {/* Left — Text */}
+        <div className="space-y-8">
+
+          {/* Eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex items-center gap-3"
+          >
+            <div className="w-8 h-[2px] bg-primary flex-shrink-0" />
+            <span className="font-display text-xs tracking-[0.25em] uppercase text-primary font-medium">
+              Collection 001
+            </span>
+          </motion.div>
+
+          {/* Heading */}
+          <div>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display font-black leading-none tracking-tight"
+            >
+              <span className="block text-5xl sm:text-6xl lg:text-7xl text-foreground mb-2">
+                Discover Your
+              </span>
+              <span className="block text-5xl sm:text-6xl lg:text-7xl text-foreground mb-2">
+                Next{" "}
+                <span className="text-stroke-coral">Obsession</span>
+              </span>
+            </motion.h1>
           </div>
-        </ScrollReveal>
 
-        {/* Main Heading — BlurText */}
-        <div className="space-y-2">
-          <BlurText
-            text="Discover Your Next"
-            delay={120}
-            animateBy="words"
-            direction="top"
-            className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight text-foreground justify-center font-sans"
-            stepDuration={0.4}
-          />
-          <BlurText
-            text="Favorite Product"
-            delay={100}
-            animateBy="words"
-            direction="top"
-            className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent justify-center"
-            stepDuration={0.45}
-          />
+          {/* Body */}
+          <ScrollReveal delay={0.35} direction="up">
+            <p className="text-muted-foreground font-normal text-base leading-relaxed max-w-md">
+              Resistance is futile. You've already convinced yourself this is a
+              necessity. We're just here to facilitate your elegant surrender to
+              consumerism.
+            </p>
+          </ScrollReveal>
+
+          {/* CTAs */}
+          <ScrollReveal delay={0.45} direction="up">
+            <div className="flex flex-wrap gap-4">
+              <Link to="/products">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-primary text-primary-foreground font-display font-medium tracking-widest uppercase text-sm px-7 py-3 hover:bg-primary/90 transition-colors"
+                >
+                  Surrender Now
+                </motion.button>
+              </Link>
+              <Link to="/about">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="border border-foreground text-foreground font-display font-medium tracking-widest uppercase text-sm px-7 py-3 hover:bg-foreground hover:text-background transition-colors"
+                >
+                  View Archives
+                </motion.button>
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
 
-        {/* Description */}
-        <ScrollReveal delay={0.5} direction="up">
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Shop from our carefully curated collection of premium products.
-            Experience seamless shopping with our modern, intuitive interface and
-            exceptional customer service.
-          </p>
-        </ScrollReveal>
+        {/* Right — Product Card */}
+        <ScrollReveal direction="right" delay={0.3}>
+          <div className="relative">
+            {/* Card */}
+            <div className="border border-border bg-card overflow-hidden relative">
+              {/* Label top right */}
+              <div className="absolute top-3 right-3 z-10">
+                <span className="font-mono text-xs text-muted-foreground tracking-widest">
+                  #LMR_001
+                </span>
+              </div>
 
-        {/* CTA Buttons */}
-        <ScrollReveal delay={0.7} direction="up">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link to="/products">
-              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                <Button size="lg" className="gap-2 font-semibold px-8">
-                  Shop Now
-                  <ArrowRight size={20} />
-                </Button>
-              </motion.div>
-            </Link>
-            <Link to="/#features">
-              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                <Button size="lg" variant="outline" className="font-semibold px-8">
-                  Learn More
-                </Button>
-              </motion.div>
-            </Link>
+              {/* Image */}
+              <div className="aspect-[4/5] overflow-hidden">
+                <img
+                  src={HERO_IMAGE}
+                  alt="Featured Collection Piece"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Bottom overlay */}
+              <div className="bg-card/90 backdrop-blur-sm border-t border-border px-4 py-3">
+                <p className="font-display text-xs tracking-widest uppercase text-muted-foreground font-medium">
+                  The "Void" Lounge
+                </p>
+                <p className="font-display text-xs tracking-widest text-primary font-medium mt-0.5">
+                  Jetbrains Mono Output: $12,400.00
+                </p>
+              </div>
+            </div>
+
+            {/* Decorative corner accent */}
+            <div className="absolute -bottom-3 -right-3 w-16 h-16 border-r border-b border-primary/30" />
           </div>
-        </ScrollReveal>
-
-        {/* Trust Badges */}
-        <ScrollReveal delay={0.9} direction="fade">
-          <StaggerReveal
-            className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-12 text-sm text-muted-foreground"
-            staggerDelay={0.15}
-            direction="up"
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-lg text-green-500">✓</span>
-              <span className="font-medium">10,000+ Happy Customers</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg text-green-500">✓</span>
-              <span className="font-medium">30-Day Returns</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg text-green-500">✓</span>
-              <span className="font-medium">Secure Checkout</span>
-            </div>
-          </StaggerReveal>
         </ScrollReveal>
 
       </div>

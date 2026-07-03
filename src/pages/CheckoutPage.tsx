@@ -2,450 +2,194 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/navbar";
 import { useCartStore } from "@/lib/store";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ChevronRight, Lock } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "motion/react";
-import BlurText from "@/components/BlurText";
+import { ChevronRight } from "lucide-react";
+
+const inputClass =
+  "w-full bg-transparent border border-border px-4 py-3 font-sans text-sm text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-primary transition-colors font-normal";
+const labelClass =
+  "block font-display text-[10px] tracking-[0.25em] uppercase text-muted-foreground font-medium mb-2";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const { items, clearCart } = useCartStore();
-  const [step, setStep] = useState("contact");
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const [formData, setFormData] = useState({
-    // Contact
-    email: "",
-    phone: "",
-    // Shipping
-    firstName: "",
-    lastName: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-    country: "",
-    // Payment
-    cardName: "",
-    cardNumber: "",
-    cardExpiry: "",
-    cardCVC: "",
+  const [step, setStep] = useState<"shipping" | "payment">("shipping");
+  const [form, setForm] = useState({
+    firstName: "", lastName: "", email: "", phone: "",
+    address: "", city: "", state: "", zip: "", country: "US",
+    cardNumber: "", cardName: "", expiry: "", cvv: "",
   });
 
-  const [promoCode, setPromoCode] = useState("");
-  const [discountApplied, setDiscountApplied] = useState(false);
-
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
-  const discount = discountApplied ? subtotal * 0.1 : 0;
-  const tax = (subtotal - discount) * 0.1;
+  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const tax = subtotal * 0.1;
   const shipping = subtotal > 100 ? 0 : 10;
-  const total = subtotal - discount + tax + shipping;
+  const total = subtotal + tax + shipping;
 
-  if (items.length === 0) {
-    return (
-      <>
-        <Navbar />
-        <main className="bg-background min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-foreground mb-4">
-              Your cart is empty
-            </h1>
-            <Button onClick={() => navigate("/products")}>
-              Continue Shopping
-            </Button>
-          </div>
-        </main>
-      </>
-    );
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleApplyPromo = () => {
-    if (promoCode.toUpperCase() === "SAVE10") {
-      setDiscountApplied(true);
-    } else {
-      alert("Invalid promo code");
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
-    if (step === "contact") {
-      if (!formData.email || !formData.phone) {
-        alert("Please fill in all contact fields");
-        return;
-      }
-      setStep("shipping");
-    } else if (step === "shipping") {
-      if (
-        !formData.firstName ||
-        !formData.lastName ||
-        !formData.address ||
-        !formData.city ||
-        !formData.state ||
-        !formData.zip
-      ) {
-        alert("Please fill in all shipping fields");
-        return;
-      }
-      setStep("payment");
-    } else if (step === "payment") {
-      if (
-        !formData.cardName ||
-        !formData.cardNumber ||
-        !formData.cardExpiry ||
-        !formData.cardCVC
-      ) {
-        alert("Please fill in all payment fields");
-        return;
-      }
-
-      setIsProcessing(true);
-      // Simulate payment processing
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Clear cart and navigate to success
-      clearCart();
-      navigate("/checkout/success", {
-        state: {
-          orderTotal: total,
-          items: items.length,
-          email: formData.email,
-        },
-      });
-    }
-  };
+    if (step === "shipping") { setStep("payment"); return; }
+    clearCart();
+    navigate("/checkout/success");
+  }
 
   return (
     <>
       <Navbar />
       <main className="bg-background min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <BlurText
-            text="Checkout"
-            delay={100}
-            animateBy="words"
-            direction="top"
-            className="text-4xl font-black text-foreground mb-8"
-            stepDuration={0.4}
-          />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+          {/* Header */}
+          <ScrollReveal direction="up">
+            <div className="border-b border-border pb-8 mb-8">
+              <p className="font-display text-[10px] tracking-[0.3em] uppercase text-primary font-medium mb-2">
+                Finalizing Your Acquisition
+              </p>
+              <h1 className="font-display font-black text-4xl sm:text-5xl text-foreground uppercase">
+                Checkout
+              </h1>
+              {/* Step indicator */}
+              <div className="flex items-center gap-3 mt-4">
+                {["Shipping", "Payment"].map((s, i) => {
+                  const isActive = (i === 0 && step === "shipping") || (i === 1 && step === "payment");
+                  const isDone = i === 0 && step === "payment";
+                  return (
+                    <div key={s} className="flex items-center gap-3">
+                      <div className={`flex items-center gap-2 ${isActive ? "text-foreground" : isDone ? "text-primary" : "text-muted-foreground"}`}>
+                        <div className={`w-5 h-5 border flex items-center justify-center font-display text-[10px] font-bold ${isActive ? "border-foreground" : isDone ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
+                          {isDone ? "✓" : i + 1}
+                        </div>
+                        <span className="font-display text-xs tracking-widest uppercase font-medium">{s}</span>
+                      </div>
+                      {i < 1 && <ChevronRight size={12} className="text-muted-foreground" />}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </ScrollReveal>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Form Section */}
-            <ScrollReveal direction="left" delay={0.15} className="lg:col-span-2">
-              {/* Steps */}
-              <div className="mb-8 flex items-center gap-4">
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full font-semibold ${
-                    step === "contact" || ["shipping", "payment"].includes(step)
-                      ? "bg-primary text-white"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  1
-                </div>
-                <span className="font-medium">Contact</span>
 
-                <ChevronRight size={20} className="text-muted-foreground" />
-
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full font-semibold ${
-                    step === "shipping" || step === "payment"
-                      ? "bg-primary text-white"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  2
-                </div>
-                <span className="font-medium">Shipping</span>
-
-                <ChevronRight size={20} className="text-muted-foreground" />
-
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full font-semibold ${
-                    step === "payment"
-                      ? "bg-primary text-white"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  3
-                </div>
-                <span className="font-medium">Payment</span>
-              </div>
-
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Contact Step */}
-                {step === "contact" && (
-                  <div className="space-y-4 p-6 rounded-lg border border-border bg-card">
-                    <h2 className="text-xl font-semibold text-foreground mb-4">
-                      Contact Information
-                    </h2>
-                    <Input
-                      type="email"
-                      name="email"
-                      placeholder="Email address"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                    <Input
-                      type="tel"
-                      name="phone"
-                      placeholder="Phone number"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
+            {/* Form */}
+            <div className="lg:col-span-2">
+              <form onSubmit={handleSubmit}>
+                {step === "shipping" ? (
+                  <ScrollReveal direction="left" delay={0.1}>
+                    <div className="space-y-6">
+                      <h2 className="font-display font-bold text-lg text-foreground uppercase mb-4">
+                        Shipping Information
+                      </h2>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className={labelClass}>First Name</label>
+                          <input name="firstName" value={form.firstName} onChange={handleChange} placeholder="First" required className={inputClass} />
+                        </div>
+                        <div>
+                          <label className={labelClass}>Last Name</label>
+                          <input name="lastName" value={form.lastName} onChange={handleChange} placeholder="Last" required className={inputClass} />
+                        </div>
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className={labelClass}>Email</label>
+                          <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@domain.com" required className={inputClass} />
+                        </div>
+                        <div>
+                          <label className={labelClass}>Phone</label>
+                          <input name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="+1 555 000 0000" className={inputClass} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className={labelClass}>Address</label>
+                        <input name="address" value={form.address} onChange={handleChange} placeholder="Street address" required className={inputClass} />
+                      </div>
+                      <div className="grid sm:grid-cols-3 gap-4">
+                        <div>
+                          <label className={labelClass}>City</label>
+                          <input name="city" value={form.city} onChange={handleChange} placeholder="City" required className={inputClass} />
+                        </div>
+                        <div>
+                          <label className={labelClass}>State</label>
+                          <input name="state" value={form.state} onChange={handleChange} placeholder="State" required className={inputClass} />
+                        </div>
+                        <div>
+                          <label className={labelClass}>ZIP</label>
+                          <input name="zip" value={form.zip} onChange={handleChange} placeholder="00000" required className={inputClass} />
+                        </div>
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                ) : (
+                  <ScrollReveal direction="left" delay={0.1}>
+                    <div className="space-y-6">
+                      <h2 className="font-display font-bold text-lg text-foreground uppercase mb-4">
+                        Payment Details
+                      </h2>
+                      <div>
+                        <label className={labelClass}>Card Number</label>
+                        <input name="cardNumber" value={form.cardNumber} onChange={handleChange} placeholder="0000 0000 0000 0000" required maxLength={19} className={inputClass} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>Name on Card</label>
+                        <input name="cardName" value={form.cardName} onChange={handleChange} placeholder="Full name" required className={inputClass} />
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className={labelClass}>Expiry</label>
+                          <input name="expiry" value={form.expiry} onChange={handleChange} placeholder="MM / YY" required maxLength={7} className={inputClass} />
+                        </div>
+                        <div>
+                          <label className={labelClass}>CVV</label>
+                          <input name="cvv" type="password" value={form.cvv} onChange={handleChange} placeholder="•••" required maxLength={4} className={inputClass} />
+                        </div>
+                      </div>
+                    </div>
+                  </ScrollReveal>
                 )}
 
-                {/* Shipping Step */}
-                {step === "shipping" && (
-                  <div className="space-y-4 p-6 rounded-lg border border-border bg-card">
-                    <h2 className="text-xl font-semibold text-foreground mb-4">
-                      Shipping Address
-                    </h2>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        name="firstName"
-                        placeholder="First name"
-                        value={formData.firstName}
-                        onChange={handleInputChange}
-                        required
-                      />
-                      <Input
-                        name="lastName"
-                        placeholder="Last name"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                    <Input
-                      name="address"
-                      placeholder="Street address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      required
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        name="city"
-                        placeholder="City"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        required
-                      />
-                      <Input
-                        name="state"
-                        placeholder="State/Province"
-                        value={formData.state}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        name="zip"
-                        placeholder="ZIP/Postal code"
-                        value={formData.zip}
-                        onChange={handleInputChange}
-                        required
-                      />
-                      <select
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        className="rounded border border-input bg-background px-3 py-2"
-                        required
-                      >
-                        <option value="">Select country</option>
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
-                        <option value="UK">United Kingdom</option>
-                        <option value="AU">Australia</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-
-                {/* Payment Step */}
-                {step === "payment" && (
-                  <div className="space-y-4 p-6 rounded-lg border border-border bg-card">
-                    <h2 className="text-xl font-semibold text-foreground mb-4">
-                      Payment Information
-                    </h2>
-                    <div className="flex items-center gap-2 p-3 bg-accent/10 border border-accent/20 rounded text-accent text-sm">
-                      <Lock size={16} />
-                      Your payment is secure and encrypted
-                    </div>
-                    <Input
-                      name="cardName"
-                      placeholder="Cardholder name"
-                      value={formData.cardName}
-                      onChange={handleInputChange}
-                      required
-                    />
-                    <Input
-                      name="cardNumber"
-                      placeholder="Card number"
-                      value={formData.cardNumber}
-                      onChange={handleInputChange}
-                      maxLength={16}
-                      required
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        name="cardExpiry"
-                        placeholder="MM/YY"
-                        value={formData.cardExpiry}
-                        onChange={handleInputChange}
-                        required
-                      />
-                      <Input
-                        name="cardCVC"
-                        placeholder="CVC"
-                        value={formData.cardCVC}
-                        onChange={handleInputChange}
-                        maxLength={3}
-                        required
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Navigation Buttons */}
-                <div className="flex gap-4">
-                  {step !== "contact" && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        if (step === "shipping") setStep("contact");
-                        else if (step === "payment") setStep("shipping");
-                      }}
-                      className="flex-grow"
-                    >
-                      Back
-                    </Button>
-                  )}
-                  <Button
-                    type="submit"
-                    disabled={isProcessing}
-                    className="flex-grow"
-                  >
-                    {step === "payment"
-                      ? isProcessing
-                        ? "Processing..."
-                        : `Pay $${total.toFixed(2)}`
-                      : "Continue"}
-                  </Button>
-                </div>
+                <motion.button
+                  type="submit"
+                  whileTap={{ scale: 0.97 }}
+                  className="mt-8 w-full bg-primary text-primary-foreground font-display font-medium tracking-widest uppercase text-sm py-4 hover:bg-primary/90 transition-colors"
+                >
+                  {step === "shipping" ? "Continue to Payment →" : "Complete Acquisition"}
+                </motion.button>
               </form>
-            </ScrollReveal>
+            </div>
 
-            {/* Order Summary */}
-            <ScrollReveal direction="right" delay={0.25} className="lg:col-span-1">
-              <div className="rounded-lg border border-border bg-card p-6 sticky top-20">
-                <h2 className="text-xl font-semibold text-foreground mb-6">
+            {/* Summary */}
+            <ScrollReveal direction="right" delay={0.2}>
+              <div className="border border-border bg-card p-6 sticky top-20">
+                <h2 className="font-display font-bold text-base text-foreground uppercase mb-4 pb-4 border-b border-border">
                   Order Summary
                 </h2>
-
-                {/* Items */}
-                <div className="space-y-2 mb-6 pb-6 border-b border-border max-h-64 overflow-y-auto">
+                <div className="space-y-3 mb-6">
                   {items.map((item) => (
-                    <div
-                      key={`${item.id}-${item.color}-${item.size}`}
-                      className="flex justify-between text-sm"
-                    >
-                      <span className="text-muted-foreground">
-                        {item.title} x{item.quantity}
-                      </span>
-                      <span className="text-foreground font-medium">
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </span>
+                    <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-3">
+                      <div className="w-12 h-12 bg-white flex-shrink-0">
+                        <img src={item.image} alt={item.title} className="w-full h-full object-contain p-1" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-display text-xs text-foreground font-medium uppercase line-clamp-1">{item.title}</p>
+                        <p className="font-display text-[10px] text-muted-foreground tracking-widest uppercase">×{item.quantity}</p>
+                      </div>
+                      <p className="font-display text-xs font-bold text-foreground flex-shrink-0">${(item.price * item.quantity).toFixed(2)}</p>
                     </div>
                   ))}
                 </div>
-
-                {/* Promo Code */}
-                {step === "payment" && (
-                  <div className="mb-6">
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Promo code"
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value)}
-                        disabled={discountApplied}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleApplyPromo}
-                        disabled={discountApplied}
-                      >
-                        Apply
-                      </Button>
-                    </div>
-                    {discountApplied && (
-                      <p className="text-xs text-green-600 mt-2">
-                        Promo code applied!
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* Pricing */}
-                <div className="space-y-3 mb-6 pb-6 border-b border-border">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span className="text-foreground">
-                      ${subtotal.toFixed(2)}
-                    </span>
-                  </div>
-                  {discountApplied && (
-                    <div className="flex justify-between text-sm text-green-600">
-                      <span>Discount (10%)</span>
-                      <span>-${discount.toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Tax</span>
-                    <span className="text-foreground">${tax.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span
-                      className={
-                        subtotal > 100
-                          ? "text-green-600 font-medium"
-                          : "text-foreground"
-                      }
-                    >
-                      ${shipping.toFixed(2)}
-                    </span>
-                  </div>
+                <div className="space-y-2 border-t border-border pt-4 mb-4">
+                  <div className="flex justify-between text-sm"><span className="text-muted-foreground font-normal">Subtotal</span><span className="font-medium font-display">${subtotal.toFixed(2)}</span></div>
+                  <div className="flex justify-between text-sm"><span className="text-muted-foreground font-normal">Tax</span><span className="font-medium font-display">${tax.toFixed(2)}</span></div>
+                  <div className="flex justify-between text-sm"><span className="text-muted-foreground font-normal">Shipping</span><span className={`font-medium font-display ${subtotal > 100 ? "text-primary" : ""}`}>{subtotal > 100 ? "Free" : `$${shipping.toFixed(2)}`}</span></div>
                 </div>
-
-                {/* Total */}
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-foreground">Total</span>
-                  <span className="text-2xl font-bold text-accent">
-                    ${total.toFixed(2)}
-                  </span>
+                <div className="border-t border-border pt-4 flex justify-between items-baseline">
+                  <span className="font-display text-xs tracking-widest uppercase text-foreground font-medium">Total</span>
+                  <span className="font-display font-black text-2xl text-primary">${total.toFixed(2)}</span>
                 </div>
               </div>
             </ScrollReveal>

@@ -1,21 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/navbar";
 import { useCartStore } from "@/lib/store";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight, Plus, Minus } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion, AnimatePresence } from "motion/react";
-import BlurText from "@/components/BlurText";
 
 export default function CartPage() {
   const navigate = useNavigate();
-  const { items, removeItem, updateQuantity, clearCart } = useCartStore();
+  const { items, removeItem, updateQuantity } = useCartStore();
 
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const tax = subtotal * 0.1;
   const shipping = subtotal > 100 ? 0 : 10;
   const total = subtotal + tax + shipping;
@@ -24,23 +18,21 @@ export default function CartPage() {
     return (
       <>
         <Navbar />
-        <main className="bg-background min-h-screen">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center py-24">
-              <ShoppingBag
-                size={64}
-                className="mx-auto text-muted-foreground mb-6 opacity-50"
-              />
-              <h1 className="text-3xl font-bold text-foreground mb-4">
-                Your cart is empty
-              </h1>
-              <p className="text-muted-foreground mb-8">
-                Discover amazing products and add them to your cart
-              </p>
-              <Button onClick={() => navigate("/products")} size="lg">
-                Continue Shopping
-              </Button>
-            </div>
+        <main className="bg-background min-h-screen flex items-center justify-center">
+          <div className="text-center border border-border p-16">
+            <ShoppingBag size={48} className="mx-auto text-muted-foreground mb-6 opacity-30" />
+            <h1 className="font-display font-black text-3xl text-foreground uppercase mb-3">
+              The Void is Empty
+            </h1>
+            <p className="text-muted-foreground font-normal text-sm mb-8">
+              Your collection awaits. You simply haven't acquired anything yet.
+            </p>
+            <button
+              onClick={() => navigate("/products")}
+              className="bg-primary text-primary-foreground font-display font-medium tracking-widest uppercase text-xs px-8 py-3 hover:bg-primary/90 transition-colors"
+            >
+              Browse Collections
+            </button>
           </div>
         </main>
       </>
@@ -51,182 +43,152 @@ export default function CartPage() {
     <>
       <Navbar />
       <main className="bg-background min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <BlurText
-            text="Shopping Cart"
-            delay={100}
-            animateBy="words"
-            direction="top"
-            className="text-4xl font-black text-foreground mb-8"
-            stepDuration={0.4}
-          />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+          {/* Header */}
+          <ScrollReveal direction="up">
+            <div className="border-b border-border pb-8 mb-8">
+              <p className="font-display text-[10px] tracking-[0.3em] uppercase text-primary font-medium mb-2">
+                Your Acquisitions
+              </p>
+              <h1 className="font-display font-black text-4xl sm:text-5xl text-foreground uppercase">
+                Shopping Cart
+              </h1>
+              <p className="text-muted-foreground font-normal text-sm mt-2">
+                {items.length} {items.length === 1 ? "item" : "items"} awaiting commitment.
+              </p>
+            </div>
+          </ScrollReveal>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
-            <ScrollReveal direction="left" delay={0.15} className="lg:col-span-2">
-              <div className="space-y-4">
-                {items.map((item) => (
-                  <div
-                    key={`${item.id}-${item.color}-${item.size}`}
-                    className="flex gap-4 p-4 rounded-lg border border-border bg-card hover:border-primary/50 transition"
-                  >
-                    {/* Image */}
-                    <div className="w-24 h-24 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
 
-                    {/* Details */}
-                    <div className="flex-grow">
-                      <h3 className="font-semibold text-foreground">
-                        {item.title}
-                      </h3>
-                      <div className="flex gap-4 text-sm text-muted-foreground mt-1">
-                        <span>Color: {item.color}</span>
-                        <span>Size: {item.size}</span>
+            {/* Cart items */}
+            <ScrollReveal direction="left" delay={0.1} className="lg:col-span-2">
+              <div className="space-y-0">
+                <AnimatePresence>
+                  {items.map((item) => (
+                    <motion.div
+                      key={`${item.id}-${item.color}-${item.size}`}
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -40 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex gap-4 p-4 border border-border hover:border-primary/40 transition-colors bg-card mb-2"
+                    >
+                      {/* Image */}
+                      <div className="w-20 h-20 bg-white flex-shrink-0 overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-full h-full object-contain p-1"
+                        />
                       </div>
-                      <div className="flex items-center gap-4 mt-4">
-                        <div className="flex items-center gap-2 bg-muted rounded">
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-display font-bold text-sm text-foreground uppercase leading-tight line-clamp-2">
+                          {item.title}
+                        </h3>
+                        <p className="font-display text-[10px] tracking-widest uppercase text-primary font-medium mt-1">
+                          ${item.price.toFixed(2)} each
+                        </p>
+
+                        {/* Qty stepper */}
+                        <div className="flex items-center gap-0 border border-border w-fit mt-3">
                           <button
-                            onClick={() =>
-                              updateQuantity(
-                                item.id,
-                                Math.max(1, item.quantity - 1),
-                                item.color,
-                                item.size,
-                              )
-                            }
-                            className="p-1 hover:text-primary"
+                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1), item.color, item.size)}
+                            className="w-8 h-8 flex items-center justify-center hover:text-primary transition-colors border-r border-border"
                           >
-                            -
+                            <Minus size={12} />
                           </button>
-                          <span className="w-8 text-center">
-                            {item.quantity}
-                          </span>
+                          <span className="font-display text-sm font-medium w-8 text-center">{item.quantity}</span>
                           <button
-                            onClick={() =>
-                              updateQuantity(
-                                item.id,
-                                item.quantity + 1,
-                                item.color,
-                                item.size,
-                              )
-                            }
-                            className="p-1 hover:text-primary"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1, item.color, item.size)}
+                            className="w-8 h-8 flex items-center justify-center hover:text-primary transition-colors border-l border-border"
                           >
-                            +
+                            <Plus size={12} />
                           </button>
                         </div>
-                        <span className="font-semibold text-foreground">
+                      </div>
+
+                      {/* Right: total + remove */}
+                      <div className="flex flex-col items-end justify-between flex-shrink-0">
+                        <span className="font-display font-bold text-base text-foreground">
                           ${(item.price * item.quantity).toFixed(2)}
                         </span>
+                        <button
+                          onClick={() => removeItem(item.id, item.color, item.size)}
+                          className="text-muted-foreground hover:text-destructive transition-colors"
+                          aria-label="Remove item"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </div>
-                    </div>
-
-                    {/* Remove Button */}
-                    <button
-                      onClick={() => removeItem(item.id, item.color, item.size)}
-                      className="p-2 hover:bg-destructive/10 rounded text-destructive transition"
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </div>
-                ))}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
 
-              {/* Continue Shopping */}
-              <Button
-                variant="outline"
+              <button
                 onClick={() => navigate("/products")}
-                className="w-full mt-8"
+                className="w-full mt-4 border border-border text-foreground font-display font-medium tracking-widest uppercase text-xs py-3 hover:border-primary hover:text-primary transition-colors"
               >
-                Continue Shopping
-              </Button>
+                Continue Acquiring
+              </button>
             </ScrollReveal>
 
             {/* Order Summary */}
-            <ScrollReveal direction="right" delay={0.25} className="lg:col-span-1">
-              <div className="rounded-lg border border-border bg-card p-6 sticky top-20">
-                <h2 className="text-xl font-semibold text-foreground mb-6">
+            <ScrollReveal direction="right" delay={0.2}>
+              <div className="border border-border bg-card p-6 sticky top-20">
+                <h2 className="font-display font-bold text-lg text-foreground uppercase mb-6 border-b border-border pb-4">
                   Order Summary
                 </h2>
 
-                {/* Promo Code */}
-                <div className="mb-6">
-                  <div className="flex gap-2">
-                    <Input placeholder="Promo code" className="flex-grow" />
-                    <Button variant="outline">Apply</Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Try "SAVE10" for 10% off
-                  </p>
+                <div className="space-y-3 mb-6">
+                  {[
+                    { label: "Subtotal", value: `$${subtotal.toFixed(2)}` },
+                    { label: "Tax (10%)", value: `$${tax.toFixed(2)}` },
+                    {
+                      label: subtotal > 100 ? "Shipping (Free)" : "Shipping",
+                      value: subtotal > 100 ? "$0.00" : `$${shipping.toFixed(2)}`,
+                      highlight: subtotal > 100,
+                    },
+                  ].map((row) => (
+                    <div key={row.label} className="flex justify-between text-sm">
+                      <span className="text-muted-foreground font-normal">{row.label}</span>
+                      <span className={`font-medium font-display ${row.highlight ? "text-primary" : "text-foreground"}`}>
+                        {row.value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
-                {/* Pricing */}
-                <div className="space-y-3 mb-6 pb-6 border-b border-border">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span className="text-foreground">
-                      ${subtotal.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Tax (10%)</span>
-                    <span className="text-foreground">${tax.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Shipping{" "}
-                      {subtotal > 100 && (
-                        <span className="text-green-600">(Free)</span>
-                      )}
-                    </span>
-                    <span
-                      className={
-                        subtotal > 100
-                          ? "text-green-600 font-medium"
-                          : "text-foreground"
-                      }
-                    >
-                      ${shipping.toFixed(2)}
-                    </span>
+                <div className="border-t border-border pt-4 mb-6">
+                  <div className="flex justify-between items-baseline">
+                    <span className="font-display font-medium text-sm text-foreground uppercase tracking-widest">Total</span>
+                    <span className="font-display font-black text-3xl text-primary">${total.toFixed(2)}</span>
                   </div>
                 </div>
 
-                {/* Total */}
-                <div className="mb-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="font-semibold text-foreground">Total</span>
-                    <span className="text-2xl font-bold text-accent">
-                      ${total.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Buttons */}
-                <Button
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => navigate("/checkout")}
-                  size="lg"
-                  className="w-full gap-2 mb-3"
+                  className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-display font-medium tracking-widest uppercase text-sm py-4 hover:bg-primary/90 transition-colors mb-3"
                 >
                   Proceed to Checkout
-                  <ArrowRight size={20} />
-                </Button>
+                  <ArrowRight size={16} />
+                </motion.button>
 
-                <Button
-                  variant="outline"
+                <button
                   onClick={() => navigate("/")}
-                  className="w-full"
+                  className="w-full border border-border text-foreground font-display font-medium tracking-widest uppercase text-xs py-3 hover:border-primary hover:text-primary transition-colors"
                 >
                   Back to Home
-                </Button>
+                </button>
 
-                {/* Security Info */}
-                <p className="text-xs text-muted-foreground text-center mt-6">
-                  Your payment information is secure and encrypted
+                <p className="font-display text-[10px] tracking-widest uppercase text-muted-foreground text-center mt-6">
+                  Secured Transmission · Encrypted
                 </p>
               </div>
             </ScrollReveal>
